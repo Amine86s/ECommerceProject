@@ -26,6 +26,26 @@
             border-radius: 10px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             width: 400px;
+            position: relative;
+        }
+        
+        .btn-back {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #f5f5f5;
+            color: #666;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-back:hover {
+            background: #e0e0e0;
         }
         
         .login-header {
