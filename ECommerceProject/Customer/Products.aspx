@@ -181,9 +181,11 @@
             <h1>🛒 E-Ticaret</h1>
             <div class="nav-links">
                 <span>Hoş geldin, <strong><asp:Label ID="lblFullName" runat="server"></asp:Label></strong></span>
-                <a href="Products.aspx">🏠 Ürünler</a>
+                <a href="../Default.aspx">🏠 Ana Sayfa</a>
+                <a href="Products.aspx">🛍️ Ürünler</a>
                 <a href="Cart.aspx">🛒 Sepetim</a>
                 <a href="Orders.aspx">📦 Siparişlerim</a>
+                <a href="Profile.aspx">👤 Profilim</a>
                 <asp:Button ID="btnLogout" runat="server" Text="Çıkış" CssClass="btn-logout" OnClick="btnLogout_Click" />
             </div>
         </div>

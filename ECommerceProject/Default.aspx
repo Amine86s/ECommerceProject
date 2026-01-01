@@ -182,6 +182,16 @@
             align-items: center;
             justify-content: center;
             font-size: 72px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-image::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 50%);
         }
         
         .product-info {
@@ -345,7 +355,9 @@
                 <asp:Repeater ID="rptProducts" runat="server" OnItemCommand="rptProducts_ItemCommand">
                     <ItemTemplate>
                         <div class="product-card">
-                            <div class="product-image">📱</div>
+                            <div class="product-image" style='<%# GetProductGradient(Eval("CategoryName").ToString()) %>'>
+                                <%# GetProductIcon(Eval("CategoryName").ToString()) %>
+                            </div>
                             <div class="product-info">
                                 <div class="product-category"><%# Eval("CategoryName") %></div>
                                 <div class="product-name"><%# Eval("ProductName") %></div>

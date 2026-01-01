@@ -128,9 +128,11 @@
         <div class="navbar">
             <h1>📦 Siparişlerim</h1>
             <div class="nav-links">
-                <a href="Products.aspx">🏠 Ürünler</a>
+                <a href="../Default.aspx">🏠 Ana Sayfa</a>
+                <a href="Products.aspx">🛍️ Ürünler</a>
                 <a href="Cart.aspx">🛒 Sepetim</a>
                 <a href="Orders.aspx">📦 Siparişlerim</a>
+                <a href="Profile.aspx">👤 Profilim</a>
             </div>
         </div>
         

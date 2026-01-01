@@ -115,7 +115,26 @@ namespace ECommerceProject.Customer
             {
                 int customerID = Convert.ToInt32(Session["UserID"]);
                 decimal totalAmount = Convert.ToDecimal(lblTotalAmount.Text);
-                string shippingAddress = Session["Address"] != null ? Session["Address"].ToString() : "Adres belirtilmedi";
+
+                // Kullanıcının adresini veritabanından al
+                string addressQuery = "SELECT Address FROM Users WHERE UserID = @UserID";
+                SqlParameter[] addressParams = new SqlParameter[]
+                {
+                    new SqlParameter("@UserID", customerID)
+                };
+                DataTable addressDt = DBHelper.ExecuteQuery(addressQuery, addressParams);
+
+                string shippingAddress = "Adres belirtilmedi";
+                if (addressDt.Rows.Count > 0 && !string.IsNullOrWhiteSpace(addressDt.Rows[0]["Address"].ToString()))
+                {
+                    shippingAddress = addressDt.Rows[0]["Address"].ToString();
+                }
+                else
+                {
+                    ShowMessage("Lütfen önce profilinizden adresinizi güncelleyin!", false);
+                    Response.AddHeader("REFRESH", "2;URL=Profile.aspx");
+                    return;
+                }
 
                 // Stored procedure ile sipariş oluştur
                 SqlParameter[] parameters = new SqlParameter[]
@@ -130,7 +149,7 @@ namespace ECommerceProject.Customer
                 if (dt.Rows.Count > 0)
                 {
                     int orderID = Convert.ToInt32(dt.Rows[0]["OrderID"]);
-                    ShowMessage("Siparişiniz başarıyla oluşturuldu! Sipariş No: " + orderID, true);
+                    ShowMessage("✓ Siparişiniz başarıyla oluşturuldu! Sipariş No: " + orderID, true);
 
                     // 2 saniye sonra siparişler sayfasına yönlendir
                     Response.AddHeader("REFRESH", "2;URL=Orders.aspx");

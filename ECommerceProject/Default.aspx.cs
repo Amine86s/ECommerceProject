@@ -80,25 +80,60 @@ namespace ECommerceProject
             try
             {
                 int categoryID = Convert.ToInt32(ddlCategory.SelectedValue);
-                DataTable dt;
+                string query;
+                SqlParameter[] parameters = null;
 
                 if (categoryID == 0)
                 {
                     // Tüm ürünleri getir
-                    dt = DBHelper.ExecuteStoredProcedure("sp_GetActiveProducts");
+                    query = @"SELECT 
+                                p.ProductID, 
+                                p.ProductName, 
+                                p.Description, 
+                                p.Price, 
+                                p.Stock,
+                                c.CategoryName,
+                                u.FullName AS SellerName,
+                                p.ImageURL
+                            FROM Products p
+                            INNER JOIN Categories c ON p.CategoryID = c.CategoryID
+                            INNER JOIN Users u ON p.SellerID = u.UserID
+                            WHERE p.IsActive = 1 AND p.Stock > 0
+                            ORDER BY p.CreatedDate DESC";
+
+                    DataTable dt = DBHelper.ExecuteQuery(query);
+                    rptProducts.DataSource = dt;
+                    rptProducts.DataBind();
                 }
                 else
                 {
                     // Kategoriye göre filtrele
-                    SqlParameter[] parameters = new SqlParameter[]
+                    query = @"SELECT 
+                                p.ProductID, 
+                                p.ProductName, 
+                                p.Description, 
+                                p.Price, 
+                                p.Stock,
+                                c.CategoryName,
+                                u.FullName AS SellerName,
+                                p.ImageURL
+                            FROM Products p
+                            INNER JOIN Categories c ON p.CategoryID = c.CategoryID
+                            INNER JOIN Users u ON p.SellerID = u.UserID
+                            WHERE p.CategoryID = @CategoryID 
+                              AND p.IsActive = 1 
+                              AND p.Stock > 0
+                            ORDER BY p.ProductName";
+
+                    parameters = new SqlParameter[]
                     {
                         new SqlParameter("@CategoryID", categoryID)
                     };
-                    dt = DBHelper.ExecuteStoredProcedure("sp_GetProductsByCategory", parameters);
-                }
 
-                rptProducts.DataSource = dt;
-                rptProducts.DataBind();
+                    DataTable dt = DBHelper.ExecuteQuery(query, parameters);
+                    rptProducts.DataSource = dt;
+                    rptProducts.DataBind();
+                }
             }
             catch (Exception ex)
             {
@@ -221,6 +256,46 @@ namespace ECommerceProject
             lblMessage.Text = message;
             pnlMessage.Visible = true;
             pnlMessage.CssClass = isSuccess ? "message success" : "message error";
+        }
+
+        // Kategoriye göre ürün ikonu döndür
+        protected string GetProductIcon(string categoryName)
+        {
+            switch (categoryName.ToLower())
+            {
+                case "akilli telefonlar":
+                    return "📱";
+                case "laptop & bilgisayar":
+                    return "💻";
+                case "televizyon":
+                    return "📺";
+                case "ses sistemleri":
+                    return "🎧";
+                case "kamera":
+                    return "📷";
+                default:
+                    return "📦";
+            }
+        }
+
+        // Kategoriye göre gradient renk döndür
+        protected string GetProductGradient(string categoryName)
+        {
+            switch (categoryName.ToLower())
+            {
+                case "akilli telefonlar":
+                    return "background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);";
+                case "laptop & bilgisayar":
+                    return "background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);";
+                case "televizyon":
+                    return "background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);";
+                case "ses sistemleri":
+                    return "background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);";
+                case "kamera":
+                    return "background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);";
+                default:
+                    return "background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);";
+            }
         }
     }
 }
